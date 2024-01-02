@@ -1,6 +1,5 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button"
@@ -16,10 +15,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { seedOrdersData } from "@/lib/seedOrders";
-
+import { useToast } from "@/components/ui/use-toast";
 import { useGlobalContext } from "@/utils/context";
 import { SanityProduct } from "@/config/inventory";
-import { redirect } from "next/navigation";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+
 
 interface Orders {
   product: string,
@@ -37,9 +38,8 @@ export function CartSummary() {
   const [lastname, setLastName] = useState("")
   const [address, setAddress] = useState("")
   const [phone, setPhone] = useState(0)
-  //@ts-ignore
+  const { toast } = useToast();
   const { cartItems } = useGlobalContext()
-  // console.log(phone, email, firstname, lastname, address, email === "" && phone === 0 && firstname === "" && lastname === "" && address === "");
   const submitHandler = async () => {
 
     let orders: Orders[] = []
@@ -54,10 +54,20 @@ export function CartSummary() {
     let order = {
       phone, email, lastname, address, firstname, orders
     }
-    console.log(order);
     try {
       await seedOrdersData(order)
-      redirect("/success")
+      toast({
+        title: `Checked-out ✓`,
+        description: "Succefully checked-out your orders",
+        action: (
+          <Link href="/">
+            <Button variant="link" className="gap-x-2 whitespace-nowrap">
+              <span>Return to home</span>
+              <ArrowRight className="h-5 w-5" />
+            </Button>
+          </Link>
+        )
+      });
     } catch (error) {
       console.log(error);
     }
