@@ -21,12 +21,14 @@ interface RootLayoutProps {
 }
 
 const AppProvider = ({ children }: RootLayoutProps) => {
-    const [cartItems, setCartItems] = useState<SanityProduct[]>(JSON.parse(localStorage.getItem("cartItems") ?? "[]") || []);
+    let localCartItems
+    if (typeof window !== "undefined") {
+        localCartItems = JSON.parse(localStorage.getItem("cartItems") ?? "[]")
+    }
+    const [cartItems, setCartItems] = useState<SanityProduct[]>(localCartItems || []);
 
     useEffect(() => {
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
-        console.log("executing this");
-
     }, [cartItems])
 
 
