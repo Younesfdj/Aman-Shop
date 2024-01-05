@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -39,9 +39,20 @@ export function CartSummary() {
   const [address, setAddress] = useState("")
   const [phone, setPhone] = useState(0)
   const { toast } = useToast();
-  const { cartItems } = useGlobalContext()
-  const submitHandler = async () => {
+  const { cartItems, setCartItems } = useGlobalContext()
+  const [totalPrice, setTotalPrice] = useState(0)
+  const [subTotalPrice, setSubTotalPrice] = useState(0)
 
+  useEffect(() => {
+    let total: number = 0
+    cartItems.forEach(item => {
+      total += item.price * item.quantity
+    });
+    setTotalPrice(total)
+    setSubTotalPrice(total + 400)
+  }, [cartItems])
+
+  const submitHandler = async () => {
     let orders: Orders[] = []
     cartItems.forEach((item: Product["product"]) => {
       orders.push({
@@ -68,6 +79,7 @@ export function CartSummary() {
           </Link>
         )
       });
+      setCartItems([])
     } catch (error) {
       console.log(error);
     }
@@ -84,20 +96,20 @@ export function CartSummary() {
       <dl className="mt-6 space-y-4">
         <div className="flex items-center justify-between">
           <dt className="text-sm">Subtotal</dt>
-          <dd className="text-sm font-medium">20$</dd>
+          <dd className="text-sm font-medium">{totalPrice} {"DZD"}</dd>
         </div>
         <div className="flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-600">
           <dt className="flex items-center text-sm">
             <span>Shipping estimate</span>
           </dt>
           <dd className="text-sm font-medium">
-            120$
+            400 DZD
           </dd>
         </div>
         <div className="flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-600">
           <dt className="text-base font-medium">Order total</dt>
           <dd className="text-base font-medium">
-            120$
+            {subTotalPrice} {"DZD"}
           </dd>
         </div>
       </dl>
@@ -138,7 +150,7 @@ export function CartSummary() {
               <Label htmlFor="phone" className="text-right">
                 Phone
               </Label>
-              <Input id="Phone" placeholder="055XXXXXXx" className="col-span-3" onChange={(e) => setPhone(Number(e.target.value))} />
+              <Input id="Phone" placeholder="055XXXXXXX" className="col-span-3" onChange={(e) => setPhone(Number(e.target.value))} />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="address" className="text-right">
