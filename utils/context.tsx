@@ -1,5 +1,5 @@
 "use client"
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { SanityProduct } from "@/config/inventory";
 
 interface ContextType {
@@ -21,7 +21,14 @@ interface RootLayoutProps {
 }
 
 const AppProvider = ({ children }: RootLayoutProps) => {
-    const [cartItems, setCartItems] = useState<SanityProduct[]>([]);
+    const [cartItems, setCartItems] = useState<SanityProduct[]>(JSON.parse(localStorage.getItem("cartItems") ?? "[]") || []);
+
+    useEffect(() => {
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        console.log("executing this");
+
+    }, [cartItems])
+
 
     const handleAddToCart = (item: SanityProduct) => {
         let itemExists: boolean = false;
