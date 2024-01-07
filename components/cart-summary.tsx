@@ -150,7 +150,7 @@ export function CartSummary() {
               <Label htmlFor="phone" className="text-right">
                 Phone
               </Label>
-              <Input id="Phone" placeholder="055XXXXXXX" className="col-span-3" onChange={(e) => setPhone(Number(e.target.value))} />
+              <Input id="Phone" type="number" placeholder="055XXXXXXX" className="col-span-3" onChange={(e) => setPhone(Number(e.target.value))} />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="address" className="text-right">
